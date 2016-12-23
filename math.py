@@ -5,8 +5,8 @@ Simple math movers.
 """
 
 ## Inheritance
-import library.movers as movers
-import library.movers.pushqueue as pq
+import base
+# import library.movers.pushqueue as pq
 
 ## Inifinity definition
 inf = float("inf")
@@ -16,7 +16,7 @@ inf = float("inf")
 ## ----- Special data containers ----- ##
 #########################################
 
-class MovingMax(movers.Mover):
+class MovingMax(base.Mover):
     """ Counts the current maximum of a moving data window of length *n*
     (which is infinite by default).
 
@@ -47,7 +47,7 @@ class MovingMax(movers.Mover):
             return None
 
 
-class MovingMin(movers.Mover):
+class MovingMin(base.Mover):
     """ Counts the current minimum of a moving data window of length *n*
     (which is infinite by default).
 
@@ -78,7 +78,7 @@ class MovingMin(movers.Mover):
             return None
 
 
-class MovingRatio(movers.Mover):
+class MovingRatio(base.Mover):
     """ A mover which return the ratio between the current value and the
     last value. """
     def __init__(self, n=1, **kwargs):
@@ -98,7 +98,7 @@ class MovingRatio(movers.Mover):
         self._deque = self._get_deque(self.n)
 
 
-class MovingSum(movers.Mover):
+class MovingSum(base.Mover):
     """ Counts the accumulating sum of a moving data window of length *n*
     (which is infinite by default).
 
@@ -131,7 +131,7 @@ class MovingSum(movers.Mover):
         return self._sum
 
     def _zero(self):
-        self._deque = movers.Deque((), maxlen=self.n)
+        self._deque = base.Deque((), maxlen=self.n)
         self._sum = 0
 
 
@@ -140,7 +140,7 @@ def sgn(x):
     return 1 if x.real > 0 else -1 if x.real < 0 else 0
 
 
-class SignTracker(movers.Mover):
+class SignTracker(base.Mover):
     """ Counts length of successing similar-signed values, where a 0 value
     does not change trend, and ``None`` zeros the trend. By default, the
     sign of a value is determined by :func:`sgn`, but the a different
@@ -189,7 +189,7 @@ def _dffsgn(old, new):
     return sgn(new-old)
 
 
-class ToneTracker(movers.Mover):
+class ToneTracker(base.Mover):
     """ Tracks current "tone", which is defined (by default) to be the
     sign of the substracting result of the value *gap* values earlier from
     the current value. This may be overridden by a different *toner*,
@@ -225,10 +225,10 @@ class ToneTracker(movers.Mover):
 
     def _zero(self):
         ## Reset a deque
-        self._deque = movers.Deque((), maxlen=self.gap)
+        self._deque = base.Deque((), maxlen=self.gap)
 
 
-class LocalExtrema(movers.Mover):
+class LocalExtrema(base.Mover):
     """ Tracks local extremas, where "extrema" in this sense is a value which is
     higher (lower) than its pre-defined neighbourhood. The neighbourhood is
     defined by the parameters *left* and *right* (how many values to the left,
@@ -301,10 +301,10 @@ class LocalExtrema(movers.Mover):
         return True
 
     def _empty_ld(self):
-        self._ld = movers.Deque((), maxlen=self.left)
+        self._ld = base.Deque((), maxlen=self.left)
 
     def _empty_rd(self):
-        self._rd = movers.Deque((), maxlen=self.right)
+        self._rd = base.Deque((), maxlen=self.right)
 
     def _del_c(self):
         self._c = None
@@ -317,7 +317,7 @@ class LocalExtrema(movers.Mover):
 
 
 ## Naive version, until I'll find a better one
-class SignModCounter(movers.Mover):
+class SignModCounter(base.Mover):
     def __init__(self, n=inf, **kwargs):
         self.n = n
         kwargs.update(patient=False)
@@ -335,5 +335,5 @@ class SignModCounter(movers.Mover):
         return mods
 
     def _zero(self):
-        self._deque = movers.Deque(maxlen=self.n)
+        self._deque = base.Deque(maxlen=self.n)
         return 0

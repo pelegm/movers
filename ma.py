@@ -5,7 +5,7 @@ Moving averages.
 """
 
 ## Inheritance
-import base as base
+import base
 
 ## Math
 import math
